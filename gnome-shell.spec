@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42.0
-Release:        3%{?dist}
+Release:        1000.gnomeperformance
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
@@ -33,6 +33,9 @@ Patch80003: fix-stuck-cover-pane.patch
 
 # GNOME Performance: Fade out whole icons instead of using StScrollViewFade (traditional design)
 Patch100: 1884.patch
+
+# GNOME Performance: Optimize box-shadow rendering (part 2) [chroma key design]
+Patch101: 1915.patch
 
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
