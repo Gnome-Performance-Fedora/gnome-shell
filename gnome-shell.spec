@@ -31,6 +31,9 @@ Patch80002: 0001-switchMonitor-Fix-switching-configuration.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=2063156
 Patch80003: fix-stuck-cover-pane.patch
 
+# GNOME Performance: Fade out whole icons instead of using StScrollViewFade (traditional design)
+Patch100: 1884.patch
+
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
