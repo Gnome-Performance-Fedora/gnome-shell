@@ -1,14 +1,25 @@
-Author: Daniel van Vugt <daniel.van.vugt@canonical.com>
-Source: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1884
-Editor: Sung Mingi <FiestaLake@protonmail.com>
-Commit: cac94861037a793a16e6ba2b174ff74837625406
-Last Updated: 04/02/22 (gnome-shell 42.0-1)
+From cac94861037a793a16e6ba2b174ff74837625406 Mon Sep 17 00:00:00 2001
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Date: Wed, 9 Jun 2021 21:14:01 +0800
+Subject: [PATCH] iconGrid: Fade out whole icons instead of using
+ StScrollViewFade
+
+By avoiding `StScrollViewFade` we avoid offscreening and therefore
+avoid painting everything twice to get it on screen. So this almost
+halves the render time of the icon grid.
+
+Related to: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/174,
+            https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/4367
+---
+ js/ui/appDisplay.js | 26 +++++++++++++++++++++-----
+ js/ui/iconGrid.js   | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+), 5 deletions(-)
 
 diff --git a/js/ui/appDisplay.js b/js/ui/appDisplay.js
-index 116e9931d..d89ad17e2 100644
+index a9aa8fb817..f58670c4d3 100644
 --- a/js/ui/appDisplay.js
 +++ b/js/ui/appDisplay.js
-@@ -202,6 +202,16 @@ var BaseAppView = GObject.registerClass({
+@@ -173,6 +173,16 @@ var BaseAppView = GObject.registerClass({
          this._scrollView.connect('leave-event', this._onLeave.bind(this));
          this._scrollView.connect('button-press-event', this._onButtonPress.bind(this));
  
@@ -25,7 +36,7 @@ index 116e9931d..d89ad17e2 100644
          this._scrollView.add_actor(this._grid);
  
          const scroll = this._scrollView.hscroll;
-@@ -380,10 +390,12 @@ var BaseAppView = GObject.registerClass({
+@@ -363,10 +373,12 @@ var BaseAppView = GObject.registerClass({
                  -(this._availWidth - this._grid.layout_manager.pageWidth) / 2);
          }
  
@@ -42,7 +53,7 @@ index 116e9931d..d89ad17e2 100644
      }
  
      _updateFade() {
-@@ -411,7 +423,7 @@ var BaseAppView = GObject.registerClass({
+@@ -394,7 +406,7 @@ var BaseAppView = GObject.registerClass({
                  return;
          }
  
@@ -51,7 +62,7 @@ index 116e9931d..d89ad17e2 100644
              new Clutter.Margin({
                  left: hOffset,
                  right: hOffset,
-@@ -2100,6 +2112,10 @@ class AppViewItem extends St.Button {
+@@ -2074,6 +2086,10 @@ class AppViewItem extends St.Button {
          this.fake_release();
      }
  
@@ -63,10 +74,10 @@ index 116e9931d..d89ad17e2 100644
          return this._id;
      }
 diff --git a/js/ui/iconGrid.js b/js/ui/iconGrid.js
-index 362cfda91..13f005d61 100644
+index 0bba7e9aec..48ab78daaf 100644
 --- a/js/ui/iconGrid.js
 +++ b/js/ui/iconGrid.js
-@@ -1407,4 +1407,33 @@ var IconGrid = GObject.registerClass({
+@@ -1417,4 +1417,33 @@ var IconGrid = GObject.registerClass({
          const layoutManager = this.layout_manager;
          return layoutManager.rows_per_page * layoutManager.columns_per_page;
      }
@@ -100,3 +111,6 @@ index 362cfda91..13f005d61 100644
 +        });
 +    }
  });
+-- 
+GitLab
+
