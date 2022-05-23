@@ -1,11 +1,20 @@
-Author: Daniel van Vugt <daniel.van.vugt@canonical.com>
-Source: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1915
-Editor: Sung Mingi <FiestaLake@protonmail.com>
-Commit: 6f195a883c84284c4be802f1a74e425ea1264728
-Last Updated: 04/02/22 (gnome-shell 42.0-1)
+From 97c5dc62c46131acb243b78730fa8fa551050b2f Mon Sep 17 00:00:00 2001
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Date: Thu, 15 Jul 2021 14:18:48 +0800
+Subject: [PATCH 1/2] css: Add a special chroma key color and use it on
+ .workspace-background
+
+There's no visible change here since we're just moving from the
+default transparent black to transparent other. But the latter can
+be used as a special value to indicate to the rendering code when a
+background is expected to be always occluded.
+---
+ data/theme/gnome-shell-sass/_common.scss                | 5 +++++
+ data/theme/gnome-shell-sass/widgets/_window-picker.scss | 1 +
+ 2 files changed, 6 insertions(+)
 
 diff --git a/data/theme/gnome-shell-sass/_common.scss b/data/theme/gnome-shell-sass/_common.scss
-index c6e64766e..2b5fccd57 100644
+index f86de2053c..bb51a8c4b6 100644
 --- a/data/theme/gnome-shell-sass/_common.scss
 +++ b/data/theme/gnome-shell-sass/_common.scss
 @@ -35,6 +35,11 @@ $base_border_radius: 8px;
@@ -21,7 +30,7 @@ index c6e64766e..2b5fccd57 100644
  $hover_bg_color: if($variant=='light', darken($bg_color, 3%), lighten($bg_color, 4%));
  $hover_fg_color: if($variant=='light', darken($fg_color, 5%), lighten($fg_color, 4%));
 diff --git a/data/theme/gnome-shell-sass/widgets/_window-picker.scss b/data/theme/gnome-shell-sass/widgets/_window-picker.scss
-index e494f6d8a..7c3a26cd4 100644
+index e494f6d8a1..7c3a26cd49 100644
 --- a/data/theme/gnome-shell-sass/widgets/_window-picker.scss
 +++ b/data/theme/gnome-shell-sass/widgets/_window-picker.scss
 @@ -48,5 +48,6 @@ $window_close_button_padding: 3px;
@@ -31,8 +40,28 @@ index e494f6d8a..7c3a26cd4 100644
 +  background-color: $invisible_occluded_bg_color;
    box-shadow: 0 4px 16px 4px transparentize(darken($osd_bg_color, 30%), 0.7);
  }
+-- 
+GitLab
+
+
+From 6f195a883c84284c4be802f1a74e425ea1264728 Mon Sep 17 00:00:00 2001
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Date: Tue, 25 May 2021 17:33:01 +0800
+Subject: [PATCH 2/2] st/theme-node-drawing: Conditionally paint the center
+ shadow rectangle
+
+Only when part of it is actually visible.
+
+Because the central rectangle is generally the largest part, this
+eliminates most of the shadow's render time. For example, animating
+`.workspace-background` by tapping Super, the shell's overall render
+time is reduced about 15%.
+---
+ src/st/st-theme-node-drawing.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
 diff --git a/src/st/st-theme-node-drawing.c b/src/st/st-theme-node-drawing.c
-index b32c76be2..72745ed66 100644
+index b32c76be2f..72745ed664 100644
 --- a/src/st/st-theme-node-drawing.c
 +++ b/src/st/st-theme-node-drawing.c
 @@ -2021,6 +2021,8 @@ st_theme_node_paint_sliced_shadow (StThemeNodePaintState *state,
@@ -77,3 +106,6 @@ index b32c76be2..72745ed66 100644
  
    if (xend > right)
      {
+-- 
+GitLab
+
