@@ -37,9 +37,6 @@ Patch100: 1884.patch
 # GNOME Performance: Optimize box-shadow rendering (part 2) [chroma key design]
 Patch101: 1915.patch
 
-# GNOME Performance: St theme: use css instance data
-Patch102: 536.patch
-
 %define eds_version 3.33.1
 %define gnome_desktop_version 3.35.91
 %define glib2_version 2.56.0
