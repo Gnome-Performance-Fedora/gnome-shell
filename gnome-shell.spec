@@ -2,7 +2,7 @@
 
 Name:           gnome-shell
 Version:        42.3.1
-Release:        1%{?dist}
+Release:        1000.gnomeperformance
 Summary:        Window management and application launching for GNOME
 
 License:        GPLv2+
