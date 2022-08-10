@@ -29,6 +29,8 @@ jobs:
     - run: git clone https://github.com/Gnome-Performance-Fedora/repo Gnome-Performance-Fedora-Repository
 
     - run: cp x86_64/*.rpm Gnome-Performance-Fedora-Repository/f${{ github.ref_name }}/packages
+    
+    - run: rm -f $(repomanage --keep=2 --old Gnome-Performance-Fedora-Repository/f${{ github.ref_name }}/packages)
 
     - run: createrepo --update Gnome-Performance-Fedora-Repository/f${{ github.ref_name }}/packages
 
